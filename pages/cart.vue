@@ -20,7 +20,7 @@
       </ul>
     </div>
     <div v-else>
-      <p>Your cart is empty, why not 
+      <p>Your cart is empty. Why not 
         <nuxt-link 
           exact 
           to="/" 
