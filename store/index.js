@@ -4,9 +4,8 @@ import { log } from 'util';
 
 Vue.use(Vuex);
 
-const createStore = () => {
-  return new Vuex.Store({
-    state: {
+
+export const state = () => ({
       manifest: [
         {
           id: 1,
@@ -28,21 +27,22 @@ const createStore = () => {
             'https://s3-us-west-2.amazonaws.com/s.cdpn.io/28963/sweatshirt.jpg'
         }
       ],
+      item: 'true',
       cart: [],
       snackbar: { show: false, message: '' }
-    },
-    actions: {
+    })
+    export const actions = {
       addItemToCart({ state, commit }, product) {
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             if (product.quantity > 0) {
               const cartItem = state.cart.find(item => item.id === product.id);
-              console.log('item', cartItem);
               if (cartItem) {
                 commit('incrementQuantity', cartItem);
               } else {
                 commit('pushItemToCart', product);
               }
+              commit('runOver', product)
               resolve(product);
             } else reject('Quantity was 0');
           }, 500);
@@ -54,8 +54,8 @@ const createStore = () => {
           commit('hideSnackbar');
         }, 3000);
       }
-    },
-    getters: {
+    }
+    export const getters= {
       cartItems: state => {
         return state.cart;
       },
@@ -64,8 +64,8 @@ const createStore = () => {
         console.log('reduced', total);
         return total;
       }
-    },
-    mutations: {
+    }
+   export const mutations = {
       pushItemToCart(state, { ...product }) {
         state.cart.push({ ...product });
       },
@@ -79,9 +79,12 @@ const createStore = () => {
       incrementQuantity(state, { id, quantity }) {
         const cartItem = state.cart.find(item => item.id === id);
         cartItem.quantity += quantity;
+      },
+      runOver(state, payload) {
+        console.log('state', state);
+        console.log('payload', payload);
+        state = {...state, ...payload}
+        console.log('new State', state);
+
       }
     }
-  });
-};
-
-export default createStore;
